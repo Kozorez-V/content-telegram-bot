@@ -1,15 +1,18 @@
 """Логика взаимодействия с клиентом"""
 
-import loader
-
+import config
+import logging
 from telethon.sync import TelegramClient
 
 
-client = TelegramClient('client', loader.api_id, loader.api_hash).start()
+client = TelegramClient('client', config.api_id, config.api_hash).start()
 
 
 async def get_messages(channel):
     """Парсим все посты из канала"""
 
-    async for message in client.iter_messages(channel):
-        print(message)
+    try:
+        async for message in client.iter_messages(channel):
+            print(message)
+    except ValueError as error:
+        logging.error(error)
