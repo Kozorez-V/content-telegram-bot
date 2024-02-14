@@ -3,6 +3,8 @@
 import config
 import logging
 from telethon.sync import TelegramClient
+from telethon import errors
+
 
 
 client = TelegramClient('client', config.api_id, config.api_hash).start()
@@ -10,9 +12,6 @@ client = TelegramClient('client', config.api_id, config.api_hash).start()
 
 async def get_messages(channel):
     """Парсим все посты из канала"""
-
-    try:
-        async for message in client.iter_messages(channel):
-            print(message)
-    except ValueError as error:
-        logging.error(error)
+    
+    async for message in client.iter_messages(channel):
+        pass
