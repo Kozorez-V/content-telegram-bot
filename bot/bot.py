@@ -8,7 +8,10 @@ from telethon.sync import TelegramClient, events
 from telethon import errors
 
 
-bot = TelegramClient('bot', config.api_id, config.api_hash).start(bot_token=config.bot_token)
+bot = TelegramClient(
+    'bot',
+    config.api_id,
+    config.api_hash).start(bot_token=config.bot_token)
 
 @bot.on(events.NewMessage(pattern='/start'))
 async def send_welcome(event):
