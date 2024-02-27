@@ -1,11 +1,14 @@
 from .base import Base
+from .post_tag import post_tag
 
 import datetime
+from typing import List
 
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
-    relationship)
+    relationship
+    )
 
 from sqlalchemy import ForeignKey
 
@@ -16,3 +19,6 @@ class Post(Base):
     replies: Mapped[int] = mapped_column(nullable=True)
     channel_id = Mapped[int] = mapped_column(ForeignKey('channels.id'))
     channel: Mapped['Channel']= relationship(back_populates="posts")
+    tags: Mapped[List['Tag']] = relationship(
+        secondary=post_tag, back_populates="post"
+    )

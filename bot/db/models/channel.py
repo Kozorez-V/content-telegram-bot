@@ -6,7 +6,8 @@ from .post import Post
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
-    relationship)
+    relationship
+    )
 
 from sqlalchemy.types import BigInteger
 
