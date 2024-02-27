@@ -13,7 +13,7 @@ client = TelegramClient(
     config.api_hash).start()
 
 
-async def get_messages(channel):
+async def get_messages(channel: str):
     """Парсим все текстовые посты из канала и добавляем в БД"""
 
     channel_info = await client.get_entity(channel)
@@ -32,7 +32,7 @@ async def get_messages(channel):
         #     print(message.replies.replies)
 
 
-async def get_channel_data(channel):
+async def get_channel_data(channel: str):
     """Получаем данные о канале"""
 
     channel_data = await channel.get_entity(channel)

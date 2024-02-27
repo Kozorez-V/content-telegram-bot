@@ -2,12 +2,14 @@ from .base import Base
 
 from typing import List
 
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
-from sqlaclhemy.types import BigInteger
+from sqlalchemy.orm import (
+    Mapped,
+    mapped_column,
+    relationship)
+
+from sqlalchemy.types import BigInteger
 
 
 def Channel(Base):
-    channel_id: Mapped[BigInteger]
-    username: Mapped[str]
+    channel_id: Mapped[BigInteger] = mapped_column(nullable=False)
+    username: Mapped[str] = mapped_column(nullable=True)
