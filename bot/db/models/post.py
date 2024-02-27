@@ -20,5 +20,5 @@ class Post(Base):
     channel_id = Mapped[int] = mapped_column(ForeignKey('channels.id'))
     channel: Mapped['Channel']= relationship(back_populates="posts")
     tags: Mapped[List['Tag']] = relationship(
-        secondary=post_tag, back_populates="post"
+        secondary=post_tag, back_populates="posts"
     )
