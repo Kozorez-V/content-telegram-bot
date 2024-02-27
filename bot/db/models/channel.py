@@ -10,6 +10,6 @@ from sqlalchemy.orm import (
 from sqlalchemy.types import BigInteger
 
 
-def Channel(Base):
+class Channel(Base):
     channel_id: Mapped[BigInteger] = mapped_column(nullable=False)
     username: Mapped[str] = mapped_column(nullable=True)

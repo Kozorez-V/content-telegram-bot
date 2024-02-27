@@ -7,6 +7,7 @@ from sqlalchemy.orm import (
     mapped_column,
     relationship)
 
+
 class Post(Base):
     date: Mapped[datetime.datetime] = mapped_column(nullable=False)
     views: Mapped[int] = mapped_column(nullable=True)
