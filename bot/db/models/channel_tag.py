@@ -6,6 +6,7 @@ from sqlalchemy import (
     Column
     )
 
+
 channel_tag = Table(
     'channel_tag',
     Base.metadata,

@@ -5,7 +5,6 @@ import client
 
 import logging
 from telethon.sync import TelegramClient, events
-from telethon import errors
 
 
 bot = TelegramClient(

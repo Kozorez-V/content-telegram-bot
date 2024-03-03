@@ -3,6 +3,7 @@
 from dotenv import load_dotenv
 import os
 import logging
+from pathlib import Path
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,

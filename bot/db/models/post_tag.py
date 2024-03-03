@@ -6,6 +6,7 @@ from sqlalchemy import (
     Column
     )
 
+
 post_tag = Table(
     'post_tag',
     Base.metadata,
