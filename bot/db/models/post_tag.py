@@ -1,4 +1,6 @@
 from .base import Base
+from .tag import Tag
+from .post import Post
 
 from sqlalchemy import (
     Table,
