@@ -1,9 +1,8 @@
 from .base import Base
 from .post_tag import post_tag
-# from .tag import Tag
 
 import datetime
-from typing import List
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy.orm import (
     Mapped,
@@ -12,6 +11,9 @@ from sqlalchemy.orm import (
     )
 
 from sqlalchemy import ForeignKey
+
+if TYPE_CHECKING:
+    from .tag import Tag
 
 
 class Post(Base):

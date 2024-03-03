@@ -1,4 +1,5 @@
 from .base import Base
+from .tag import Tag
 
 from sqlalchemy import (
     Table,
