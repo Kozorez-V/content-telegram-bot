@@ -1,5 +1,5 @@
 from .base import Base
-from .tag import Tag
+from ..models import *
 
 from sqlalchemy import (
     Table,
@@ -9,7 +9,7 @@ from sqlalchemy import (
 
 
 channel_tag = Table(
-    'channel_tag',
+    'channel_tag_association',
     Base.metadata,
     Column('channel_id', ForeignKey('channels.id'), primary_key=True),
     Column('tag_id', ForeignKey('tags.id'), primary_key=True),

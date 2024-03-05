@@ -1,4 +1,5 @@
 from .base import Base
+from models import *
 
 from sqlalchemy import (
     Table,
