@@ -16,8 +16,7 @@ client = TelegramClient(
 async def get_messages(channel: str):
     """Парсим все текстовые посты из канала и добавляем в БД"""
 
-    channel_info = await client.get_entity(channel)
-    print(channel_info)
+    channel_info = await get_channel_data(channel)
     
     async for message in client.iter_messages(channel,
                                               reverse=True,
@@ -35,8 +34,9 @@ async def get_messages(channel: str):
 async def get_channel_data(channel: str):
     """Получаем данные о канале"""
 
-    channel_data = await channel.get_entity(channel)
+    channel_data = await client.get_entity(channel)
 
-    print(channel_data.id)
-
-    print(channel_data.username)
+    return {
+        'id': channel_data.id,
+        'username': channel_data.username
+    }
