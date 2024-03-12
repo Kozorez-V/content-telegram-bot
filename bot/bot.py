@@ -25,7 +25,7 @@ async def send_tag_list(event):
     """Получаем посты из канала и возвращаем теги"""
 
     try:
-        await client.get_messages(event.text)
+        await client.get_channel_data(event.text)
     except ValueError as error:
         if 'Cannot get entity from a channel' in str(error):
             await event.reply('Канал должен быть публичным')

@@ -1,10 +1,13 @@
 """Логика взаимодействия с клиентом"""
 
 import config
+from config import session_factory as Session
 import logging
 from telethon.sync import TelegramClient
 from telethon.tl.types import InputMessagesFilterEmpty
 from services import tags
+
+from db.models import *
 
 
 client = TelegramClient(
@@ -15,8 +18,6 @@ client = TelegramClient(
 
 async def get_messages(channel: str):
     """Парсим все текстовые посты из канала и добавляем в БД"""
-
-    channel_info = await get_channel_data(channel)
     
     async for message in client.iter_messages(channel,
                                               reverse=True,
@@ -31,10 +32,15 @@ async def get_messages(channel: str):
         #     print(message.replies.replies)
 
 
-async def get_channel_data(channel: str):
-    """Получаем данные о канале"""
+async def get_channel_data(channel: str) -> dict:
+    """Получаем данные о канале и записываем в БД"""
 
     channel_data = await client.get_entity(channel)
+
+    if channel_data is not None:
+        async with Session.begin() as session:
+            channel = Channel(channel_id=channel_data.id, username=channel_data.username)
+            session.add(channel)
 
     return {
         'id': channel_data.id,
