@@ -1,3 +1,5 @@
+"""Работа с каналами"""
+
 from ..config import (
     client,
     session_factory as Session)

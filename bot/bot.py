@@ -1,7 +1,11 @@
 """Логика взаимодействия с ботом"""
 
 from config import bot
-import client
+from services import (
+    channel,
+    post,
+    tag
+)
 
 import logging
 from telethon.sync import events
@@ -22,10 +26,11 @@ async def send_tag_list(event) -> None:
     channel = event.text
 
     try:
-        channel_data = await client.get_channel_data(channel)
+        channel_data = await channel.get_channel_data(channel)
     except ValueError as error:
         if 'Cannot get entity from a channel' in str(error):
             await event.reply('Канал должен быть публичным')
         logging.error(error)
 
-    await client.add_channel_to_db(channel_data)
+    await channel.add_channel_to_db(channel_data)
+
