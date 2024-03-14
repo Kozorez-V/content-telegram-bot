@@ -22,22 +22,22 @@ from sqlalchemy.types import BigInteger
 post_tag = Table(
     'post_tag_association',
     Base.metadata,
-    Column('post_id', ForeignKey('posts.id'), primary_key=True, nullable=False, unique=True),
-    Column('tag_id', ForeignKey('tags.id'), primary_key=True, nullable=False, unique=True),
+    Column('post_id', ForeignKey('posts.id'), primary_key=True, nullable=False),
+    Column('tag_id', ForeignKey('tags.id'), primary_key=True, nullable=False),
 )
 
 channel_tag = Table(
     'channel_tag_association',
     Base.metadata,
-    Column('channel_id', ForeignKey('channels.id'), primary_key=True, nullable=False, unique=True),
-    Column('tag_id', ForeignKey('tags.id'), primary_key=True, nullable=False, unique=True),
+    Column('channel_id', ForeignKey('channels.id'), primary_key=True, nullable=False),
+    Column('tag_id', ForeignKey('tags.id'), primary_key=True, nullable=False),
 )
 
 
 class Channel(Base):
     __tablename__ = 'channels'
 
-    channel_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
+    channel_id: Mapped[int] = mapped_column(BigInteger, nullable=False, unique=True)
     username: Mapped[str] = mapped_column(nullable=True)
     posts: Mapped[List['Post']] = relationship(back_populates='channel')
     tags: Mapped[List['Tag']] = relationship(secondary=channel_tag, back_populates='channels')
@@ -46,6 +46,7 @@ class Channel(Base):
 class Post(Base):
     __tablename__ = 'posts'
 
+    post_id: Mapped[int] = mapped_column(nullable=False)
     date: Mapped[datetime.datetime] = mapped_column(nullable=False)
     views: Mapped[int] = mapped_column(nullable=True)
     replies: Mapped[int] = mapped_column(nullable=True)
