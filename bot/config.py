@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 import os
 import logging
 
+from telethon.sync import TelegramClient
+
 
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
@@ -17,6 +19,20 @@ load_dotenv()
 api_id = os.getenv('API_ID')
 api_hash = os.getenv('API_HASH')
 bot_token = os.getenv('BOT_TOKEN')
+
+# Инициализация клиента
+
+client = TelegramClient(
+    'client',
+    api_id,
+    api_hash).start()
+
+# Инициализация бота
+
+bot = TelegramClient(
+    'bot',
+    api_id,
+    api_hash).start(bot_token=bot_token)
 
 # Настройки базы данных
 
