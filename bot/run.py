@@ -3,14 +3,18 @@
 import asyncio
 import logging
 
-from bot import bot
-from client import client
+from config import (
+    engine,
+    client
+    )
 
-from config import engine
+from bot import bot
+
 from db.models import *
 
 loop = asyncio.get_event_loop()
 asyncio.set_event_loop(loop)
+
 
 
 async def init_db() -> None:
@@ -24,9 +28,11 @@ async def start() -> None:
 
     async with bot:
         await bot.run_until_disconnected()
+        logging.info('Бот запущен')
 
     async with client:
         await client.run_until_disconnected()
+        logging.info('Клиент запущен')
 
 
 if __name__ == "__main__":

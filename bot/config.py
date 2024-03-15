@@ -6,7 +6,6 @@ import logging
 
 from telethon.sync import TelegramClient
 
-
 from sqlalchemy.ext.asyncio import (
     create_async_engine,
     async_sessionmaker
@@ -26,13 +25,6 @@ client = TelegramClient(
     'client',
     api_id,
     api_hash).start()
-
-# Инициализация бота
-
-bot = TelegramClient(
-    'bot',
-    api_id,
-    api_hash).start(bot_token=bot_token)
 
 # Настройки базы данных
 
