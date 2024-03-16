@@ -14,19 +14,19 @@ async def write_posts_to_db(channel: str) -> None:
 
     posts_list = []
 
-    async for message in client.iter_messages(channel,
+    async for post in client.iter_messages(channel,
                                               reverse=True,
                                               filter=InputMessagesFilterEmpty):
-        if message.text:
+        if post.text:
             post_data = {
-                'post_id': message.id,
-                'date': message.date.strftime("%Y-%m-%d"),
-                'views': message.views,
+                'post_id': post.id,
+                'date': post.date.strftime("%Y-%m-%d"),
+                'views': post.views,
                 'replies': 0,
             }
 
-            if message.replies:
-                post_data['replies'] = message.replies.replies
+            if post.replies:
+                post_data['replies'] = post.replies.replies
 
             posts_list.append(post_data)
 
