@@ -18,35 +18,19 @@ async def write_posts_to_db(channel: str) -> None:
                                               reverse=True,
                                               filter=InputMessagesFilterEmpty):
         if message.text:
-            posts_list.append({
+            post_data = {
                 'post_id': message.id,
-                'date': message.date,
+                'date': message.date.strftime("%Y-%m-%d"),
                 'views': message.views,
-                'replies': message.replies.replies
-                })
-            
-        if len(posts_list) == 20:
-            for post in posts_list:
-                print(post)
+                'replies': 0,
+            }
 
-    print(posts_list)
+            if message.replies:
+                post_data['replies'] = message.replies.replies
 
+            posts_list.append(post_data)
 
+    print(len(posts_list))
 
-
-# async def get_posts(channel: str):
-#     """Парсим все текстовые посты из канала и добавляем в БД"""
-
-#     posts_list = []
-    
-#     async for message in client.iter_messages(channel,
-#                                               reverse=True,
-#                                               filter=InputMessagesFilterEmpty):
-#         if message.text:
-#             message_tags = await tag.parse_tags(message.text)
-#             if message_tags:
-#                 print(message_tags)
-#             print(message.id, message.date, message.views)
-            
-#         if message.replies:
-#             print(message.replies.replies)
+    for number, post in enumerate(posts_list):
+        print(f'Пост №{number}\n{post}')

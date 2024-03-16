@@ -38,5 +38,3 @@ async def start() -> None:
 if __name__ == "__main__":
     loop.create_task(start())
     loop.run_forever()
-
-    logging.INFO
