@@ -15,7 +15,7 @@ from db.models import *
 async def parse_posts(channel: str, channel_data: dict) -> None:
     """
     Парсим все текстовые посты из канала и записываем в БД каждые 20 постов.
-    Если общее количество постов меньше 20, сразу записываем их в БД
+    Если общее количество постов меньше 20, сразу записываем их в БД.
     """
 
     posts_list = []
@@ -40,15 +40,10 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
 
         if len(posts_list) == 20:
             await add_post_to_db(posts_list, channel_data)
-
-            # for number, post in enumerate(posts_list):
-            #     print(f'Пост №{number}\n{post}')
+            posts_list.clear()
 
     if posts_list:
         await add_post_to_db(posts_list, channel_data)
-
-        # for number, post in enumerate(posts_list):
-        #     print(f'Пост №{number}\n{post}')
 
 
 async def add_post_to_db(posts_list: list, channel_data) -> None:
