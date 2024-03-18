@@ -48,5 +48,5 @@ async def send_tag_list(event) -> None:
     except Exception as error:
         logging.error(error)
         
-    await post.write_posts_to_db(channel_link, channel_data['id'])
+    await post.parse_posts(channel_link, channel_data)
 

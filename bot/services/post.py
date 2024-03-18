@@ -1,6 +1,7 @@
 """Парсинг и запись постов в БД"""
 
 import datetime
+from sqlalchemy import select
 
 from config import (
     client,
@@ -11,8 +12,11 @@ from telethon.tl.types import InputMessagesFilterEmpty
 from db.models import *
 
 
-async def write_posts_to_db(channel: str, channel_id: int) -> None:
-    """Парсим все текстовые посты из канала и записываем их в БД"""
+async def parse_posts(channel: str) -> None:
+    """
+    Парсим все текстовые посты из канала и записываем в БД каждые 20 постов.
+    Если общее количество постов меньше 20, сразу записываем их в БД
+    """
 
     posts_list = []
 
@@ -35,28 +39,29 @@ async def write_posts_to_db(channel: str, channel_id: int) -> None:
             posts_list.append(post_data)
 
         if len(posts_list) == 20:
-            async with Session.begin() as session:
-                for post_data in posts_list:
-                    post = Post(post_id=post_data['post_id'],
-                                date=post_data['date'],
-                                views=post_data['views'],
-                                replies=post_data['replies'],
-                                channel_id=channel_id)
-                    session.add(post)
+            add_post_to_db(posts_list, channel)
 
             for number, post in enumerate(posts_list):
                 print(f'Пост №{number}\n{post}')
 
     if posts_list:
-        async with Session.begin() as session:
+        add_post_to_db(posts_list, channel)
+
+        for number, post in enumerate(posts_list):
+            print(f'Пост №{number}\n{post}')
+
+
+async def add_post_to_db(posts_list: list, channel_data) -> None:
+    """Добавляем посты в базу данных"""
+
+    async with Session.begin() as session:
+                channel_pk = session.scalars(select(Channel.id)
+                                             .filter(Channel.username == channel_data['username']))
+                
                 for post_data in posts_list:
                     post = Post(post_id=post_data['post_id'],
                                 date=post_data['date'],
                                 views=post_data['views'],
                                 replies=post_data['replies'],
-                                channel_id=channel_id)
+                                channel=channel_pk)
                     session.add(post)
-
-        for number, post in enumerate(posts_list):
-            print(f'Пост №{number}\n{post}')
-
