@@ -7,12 +7,12 @@ from config import session_factory as Session
 from db.models import *
 
 
-async def parse_tags(message_text: str) -> Optional[List[str]]:
+async def parse_tags(post_text: str) -> Optional[List[str]]:
     """Ищем теги в сообщении и возвращаем список"""
 
     tag_pattern = r'#\w+'
     tags_list = re.findall(tag_pattern,
-                           message_text)
+                           post_text)
 
     if not tags_list:
         return None
