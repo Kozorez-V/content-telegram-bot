@@ -3,14 +3,16 @@
 import asyncio
 import logging
 
+from bot import bot
+
+from db.models import *
+
 from config import (
     engine,
     client
     )
 
-from bot import bot
 
-from db.models import *
 
 loop = asyncio.get_event_loop()
 asyncio.set_event_loop(loop)

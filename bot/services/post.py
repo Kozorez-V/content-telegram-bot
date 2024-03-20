@@ -2,14 +2,12 @@
 
 import datetime
 from sqlalchemy import select
-
+from telethon.tl.types import InputMessagesFilterEmpty
+from db.models import *
+from services import tag
 from config import (
     client,
     session_factory as Session)
-
-from telethon.tl.types import InputMessagesFilterEmpty
-
-from db.models import *
 
 
 async def parse_posts(channel: str, channel_data: dict) -> None:
@@ -24,6 +22,8 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
                                               reverse=True,
                                               filter=InputMessagesFilterEmpty):
         if post.text:
+            tag.parse_tags()
+
             post_data = {
                 'post_id': int(post.id),
                 'date': datetime.datetime(post.date.year,
@@ -39,14 +39,14 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
             posts_list.append(post_data)
 
         if len(posts_list) == 20:
-            await add_post_to_db(posts_list, channel_data)
+            await add_posts_to_db(posts_list, channel_data)
             posts_list.clear()
 
     if posts_list:
-        await add_post_to_db(posts_list, channel_data)
+        await add_posts_to_db(posts_list, channel_data)
 
 
-async def add_post_to_db(posts_list: list, channel_data) -> None:
+async def add_posts_to_db(posts_list: list, channel_data: dict) -> None:
     """Добавляем посты в базу данных"""
 
     async with Session.begin() as session:

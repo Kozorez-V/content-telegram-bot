@@ -7,8 +7,7 @@ from sqlalchemy import (
     Table,
     ForeignKey,
     Column,
-    String,
-    Integer
+    String
 )
 
 from sqlalchemy.orm import (
@@ -18,6 +17,7 @@ from sqlalchemy.orm import (
 )
 
 from sqlalchemy.types import BigInteger
+
 
 post_tag = Table(
     'post_tag_association',

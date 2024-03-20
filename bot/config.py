@@ -1,9 +1,8 @@
 """Настройки проекта"""
 
-from dotenv import load_dotenv
 import os
 import logging
-
+from dotenv import load_dotenv
 from telethon.sync import TelegramClient
 
 from sqlalchemy.ext.asyncio import (
