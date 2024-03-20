@@ -23,7 +23,9 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
                                               filter=InputMessagesFilterEmpty):
         if post.text:
             tags_list = await tag.parse_tags(post.text)
-            await tag.add_tags_to_db(tags_list, channel_data)
+            
+            if tags_list:
+                await tag.add_tags_to_db(tags_list, channel_data)
 
             post_data = {
                 'post_id': int(post.id),
