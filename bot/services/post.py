@@ -81,10 +81,6 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
         elif len(posts_list) == 20 and posts_with_tags == 0:
 
             posts_list.clear()
-        
-    if posts_with_tags == 0:
-         
-         raise ValueError('Не найдено ни одного тега')
 
     # Запись в БД и очищение списков, если постов с тегами меньше 20
 
@@ -96,9 +92,11 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
         posts_list.clear()
         post_tag_list.clear()
 
-        posts_with_tags == 0
-
-    posts_with_tags == 0
+    # Поднимаем исключение, если теги не найдены
+        
+    if posts_with_tags == 0:
+         
+         raise ValueError('Не найдено ни одного тега')
 
 
 async def add_posts_to_db(posts_list: list, channel_data: dict) -> None:
