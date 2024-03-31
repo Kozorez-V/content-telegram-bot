@@ -17,6 +17,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
     """
 
     posts_list = []
+    post_tag_list = []
     posts_with_tags = 0
 
     async for post in client.iter_messages(channel,
@@ -37,27 +38,46 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
             if post.replies:
                 post_data['replies'] = post.replies.replies
 
-            # Вносим словарь в список
+            # Вносим словарь в список постов
                 
             posts_list.append(post_data)
 
-            # Парсим и записываем в БД теги
+            # Парсим теги
 
             tags_list = await tag.parse_tags(post.text)
 
+            # Увеличиваем счетчик постов с тегами
+
             if tags_list:
                 posts_with_tags += 1
-                await tag.add_tags_to_db(tags_list, channel_data, post.id)
+
+            post_tag_data = {
+                 'post_id': int(post.id),
+                 'channel_id': channel_data['id'],
+                 'tags_list': tags_list
+            }
+
+            post_tag_list.append(post_tag_data)
 
         if len(posts_list) == 20:
             await add_posts_to_db(posts_list, channel_data)
+            await tag.add_tags_to_db()
             posts_list.clear()
+            post_tag_list.clear()
         
     if posts_with_tags == 0:
          raise ValueError('Не найдено ни одного тега')
 
     if posts_list:
         await add_posts_to_db(posts_list, channel_data)
+        await tag.add_tags_to_db()
+
+        posts_list.clear()
+        post_tag_list.clear()
+
+        posts_with_tags == 0
+
+    posts_with_tags == 0
 
 
 async def add_posts_to_db(posts_list: list, channel_data: dict) -> None:
