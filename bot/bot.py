@@ -48,5 +48,10 @@ async def send_tag_list(event) -> None:
     except Exception as error:
         logging.error(error)
         
-    await post.parse_posts(channel_link, channel_data)
+    try:     
+        await post.parse_posts(channel_link, channel_data)
+    except ValueError as error:
+        logging.error(error)
+        await event.reply('К сожалению, мне не удалось найти ни одного тега')
+
 

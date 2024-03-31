@@ -7,7 +7,8 @@ from sqlalchemy import (
     Table,
     ForeignKey,
     Column,
-    String
+    String,
+    UniqueConstraint
 )
 
 from sqlalchemy.orm import (

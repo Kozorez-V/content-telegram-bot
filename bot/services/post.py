@@ -17,14 +17,16 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
     """
 
     posts_list = []
+    posts_with_tags = 0
 
     async for post in client.iter_messages(channel,
                                               reverse=True,
                                               filter=InputMessagesFilterEmpty):
         if post.text:
             tags_list = await tag.parse_tags(post.text)
-            
+
             if tags_list:
+                posts_with_tags += 1
                 await tag.add_tags_to_db(tags_list, channel_data)
 
             post_data = {
@@ -44,6 +46,9 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
         if len(posts_list) == 20:
             await add_posts_to_db(posts_list, channel_data)
             posts_list.clear()
+        
+    if posts_with_tags == 0:
+         raise ValueError('Не найдено ни одного тега')
 
     if posts_list:
         await add_posts_to_db(posts_list, channel_data)
