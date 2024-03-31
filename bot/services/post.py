@@ -64,19 +64,31 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
 
         # Записываем посты и теги в БД
 
-        if len(posts_list) == 20:
+        # Если набралось 20 постов с тегами,
+        # записываем их в БД и очищаем списки для следующей порции
+
+        if len(posts_list) == 20 and posts_with_tags > 0:
 
             await add_posts_to_db(posts_list, channel_data)
             await tag.add_tags_to_db(post_tag_list)
             
             posts_list.clear()
             post_tag_list.clear()
+
+        # Если набралось 20 постов без тегов,
+        # очищаем список постов и продолжаем парсинг
+
+        elif len(posts_list) == 20 and posts_with_tags == 0:
+
+            posts_list.clear()
         
     if posts_with_tags == 0:
          
          raise ValueError('Не найдено ни одного тега')
 
-    if posts_list:
+    # Запись в БД и очищение списков, если постов с тегами меньше 20
+
+    if posts_list and posts_with_tags > 0:
 
         await add_posts_to_db(posts_list, channel_data)
         await tag.add_tags_to_db(post_tag_list)
@@ -98,7 +110,7 @@ async def add_posts_to_db(posts_list: list, channel_data: dict) -> None:
                                              .where(Channel.username == channel_data['username']))
                 
                 for post_data in posts_list:
-                    
+
                     post = Post(post_id=post_data['post_id'],
                                 date=post_data['date'],
                                 views=post_data['views'],
