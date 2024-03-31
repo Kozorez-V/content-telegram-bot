@@ -9,8 +9,6 @@ from config import (
     client,
     session_factory as Session)
 
-import logging
-
 
 async def parse_posts(channel: str, channel_data: dict) -> None:
     """
@@ -25,6 +23,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
     async for post in client.iter_messages(channel,
                                               reverse=True,
                                               filter=InputMessagesFilterEmpty):
+        
         if post.text:
             # Вносим данные поста в словарь
 
@@ -66,6 +65,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
         # Записываем посты и теги в БД
 
         if len(posts_list) == 20:
+
             await add_posts_to_db(posts_list, channel_data)
             await tag.add_tags_to_db(post_tag_list)
             
@@ -73,9 +73,11 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
             post_tag_list.clear()
         
     if posts_with_tags == 0:
+         
          raise ValueError('Не найдено ни одного тега')
 
     if posts_list:
+
         await add_posts_to_db(posts_list, channel_data)
         await tag.add_tags_to_db(post_tag_list)
 
@@ -91,10 +93,12 @@ async def add_posts_to_db(posts_list: list, channel_data: dict) -> None:
     """Добавляем посты в базу данных"""
 
     async with Session.begin() as session:
+                
                 channel_pk = await session.scalar(select(Channel)
                                              .where(Channel.username == channel_data['username']))
                 
                 for post_data in posts_list:
+                    
                     post = Post(post_id=post_data['post_id'],
                                 date=post_data['date'],
                                 views=post_data['views'],
