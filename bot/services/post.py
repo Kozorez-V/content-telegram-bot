@@ -23,11 +23,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
                                               reverse=True,
                                               filter=InputMessagesFilterEmpty):
         if post.text:
-            tags_list = await tag.parse_tags(post.text)
-
-            if tags_list:
-                posts_with_tags += 1
-                await tag.add_tags_to_db(tags_list, channel_data)
+            # Вносим данные поста в словарь
 
             post_data = {
                 'post_id': int(post.id),
@@ -41,7 +37,17 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
             if post.replies:
                 post_data['replies'] = post.replies.replies
 
+            # Вносим словарь в список
+                
             posts_list.append(post_data)
+
+            # Парсим и записываем в БД теги
+
+            tags_list = await tag.parse_tags(post.text)
+
+            if tags_list:
+                posts_with_tags += 1
+                await tag.add_tags_to_db(tags_list, channel_data, post.id)
 
         if len(posts_list) == 20:
             await add_posts_to_db(posts_list, channel_data)
