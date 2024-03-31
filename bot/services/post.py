@@ -9,6 +9,8 @@ from config import (
     client,
     session_factory as Session)
 
+import logging
+
 
 async def parse_posts(channel: str, channel_data: dict) -> None:
     """
@@ -51,17 +53,22 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
             if tags_list:
                 posts_with_tags += 1
 
-            post_tag_data = {
-                 'post_id': int(post.id),
-                 'channel_id': channel_data['id'],
-                 'tags_list': tags_list
-            }
+            # Запоминаем текущие данные для сохранения тегов в БД 
 
-            post_tag_list.append(post_tag_data)
+                post_tag_data = {
+                    'post_id': int(post.id),
+                    'channel_id': channel_data['id'],
+                    'tags_list': tags_list
+                }
+
+                post_tag_list.append(post_tag_data)
+
+        # Записываем посты и теги в БД
 
         if len(posts_list) == 20:
             await add_posts_to_db(posts_list, channel_data)
-            await tag.add_tags_to_db()
+            await tag.add_tags_to_db(post_tag_list)
+            
             posts_list.clear()
             post_tag_list.clear()
         
@@ -70,7 +77,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
 
     if posts_list:
         await add_posts_to_db(posts_list, channel_data)
-        await tag.add_tags_to_db()
+        await tag.add_tags_to_db(post_tag_list)
 
         posts_list.clear()
         post_tag_list.clear()

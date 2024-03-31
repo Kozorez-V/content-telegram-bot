@@ -22,19 +22,25 @@ async def parse_tags(post_text: str) -> Optional[List[str]]:
     return tags_list
 
 
-async def add_tags_to_db(post_tag_list: list, channel_data: dict) -> None:
+async def add_tags_to_db(post_tag_list: list) -> None:
     """Добавляем теги в базу данных"""
 
     async with Session.begin() as session:
-        channel_pk = await session.scalar(select(Channel)
-                                             .where(Channel.channel_id == channel_data['id']))
-        
-        post_pk = await session.scalar(select(Post)
+
+        for post_tag_data in post_tag_list:
+            channel_id = post_tag_data['channel_id']
+            post_id = post_tag_data['post_id']
+            tags_list = post_tag_data['tags_list']
+
+            channel_pk = await session.scalar(select(Channel)
+                                             .where(Channel.channel_id == channel_id))
+            
+            post_pk = await session.scalar(select(Post)
                                        .where(Post.channel == channel_pk,
-                                              Post.post_id == None))
-        
-        for tag_data in post_tag_list:
-            tag = Tag()
-            tag.channels.append(channel_pk)
-            tag.posts.append(post_pk)
-            session.add(tag)
+                                              Post.post_id == post_id))
+            
+            for tag_name in tags_list:
+                tag = Tag(name=tag_name)
+                tag.channels.append(channel_pk)
+                tag.posts.append(post_pk)
+                session.add(tag)
