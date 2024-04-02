@@ -44,5 +44,14 @@ async def add_tags_to_db(post_tag_list: list) -> None:
                 session.add(tag)
 
 
-async def show_tag_list():
-    pass
+async def get_tags_list(channel_data: dict):
+    """Получаем теги определенного канала из БД"""
+
+    async with Session.begin() as session:
+        # channel_pk = await session.scalar(select(Channel)
+        #                                      .where(Channel.id == channel_data['id']))
+        tags_query = select(Tag.name).where(Tag.channels.any(Channel.id == channel_data['id']))
+        tags_result = await session.execute(tags_query)
+        tags = tags_result.all()
+    
+        print(f'!!!!!СПИСОК ТЕГОВ!!!!!! {tags}')

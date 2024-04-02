@@ -54,4 +54,6 @@ async def send_tag_list(event) -> None:
         logging.error(error)
         await event.reply('К сожалению, мне не удалось найти ни одного тега')
 
+    await tag.get_tags_list(channel_data)
+
 
