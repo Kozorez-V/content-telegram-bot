@@ -5,6 +5,8 @@ from telethon.sync import TelegramClient, events
 
 from services.channel import get_channel_data, add_channel_to_db
 from services.post import parse_posts
+from services.tag import get_tags_list
+from services.keyboard import create_tags_keyboard
 
 from config import (
     api_id,
@@ -46,9 +48,13 @@ async def send_tag_list(event) -> None:
         logging.error(error)
         
     try:     
+        await event.reply('Посты анализируются, ожидайте')
         await parse_posts(channel_link, channel_data)
     except ValueError as error:
         logging.error(error)
         await event.reply('К сожалению, мне не удалось найти ни одного тега')
 
+    tags = await get_tags_list(channel_data)
+    tags_keyboard = await create_tags_keyboard(tags)
 
+    await event.respond("Выберите теги", buttons=tags_keyboard)
