@@ -3,7 +3,7 @@
 from telethon.tl.custom import Button
 
 
-async def create_tags_keyboard(tags: list):
+async def create_tags_keyboard(tags: list) -> list:
     """Создание клавиатуры со списком тегов"""
 
     tags_keyboard = []

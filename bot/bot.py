@@ -31,7 +31,7 @@ async def send_welcome(event) -> None:
 
 @bot.on(events.NewMessage(pattern='https://t\.me/(\S+)'))
 async def send_tag_list(event) -> None:
-    """Получаем посты из канала и возвращаем теги"""
+    """Анализируем посты из канала и возвращаем клавиатуру с тегами"""
 
     channel_link = event.text
 
@@ -54,7 +54,11 @@ async def send_tag_list(event) -> None:
         logging.error(error)
         await event.reply('К сожалению, мне не удалось найти ни одного тега')
 
-    tags = await get_tags_list(channel_data)
+    try:
+        tags = await get_tags_list(channel_data)
+    except Exception as error:
+        logging.error(error)
+        
     tags_keyboard = await create_tags_keyboard(tags)
 
     await event.respond("Выберите теги", buttons=tags_keyboard)
