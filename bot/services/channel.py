@@ -38,4 +38,4 @@ async def delete_channel_from_db(channel_data: dict) -> None:
 
     async with Session.begin() as session:
         await session.execute(delete(Channel).where(Channel.channel_id == channel_id))
-        logging.info('КАНАЛ УДАЛЕН УСПЕШНО')
+        logging.info(f'Канал {channel_id} удален успешно')

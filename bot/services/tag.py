@@ -44,8 +44,8 @@ async def add_tags_to_db(post_tag_list: list) -> None:
                 session.add(tag)
 
 
-async def get_tags_list(channel_data: dict):
-    """Получаем теги определенного канала из БД"""
+async def get_tags_list(channel_data: dict) -> list:
+    """Получаем уникальные теги определенного канала из БД"""
 
     async with Session.begin() as session:
         

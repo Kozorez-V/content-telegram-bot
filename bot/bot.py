@@ -3,11 +3,8 @@
 import logging
 from telethon.sync import TelegramClient, events
 
-from services import (
-    channel,
-    post,
-    tag
-)
+from services.channel import get_channel_data, add_channel_to_db
+from services.post import parse_posts
 
 from config import (
     api_id,
@@ -37,23 +34,21 @@ async def send_tag_list(event) -> None:
     channel_link = event.text
 
     try:
-        channel_data = await channel.get_channel_data(channel_link)
+        channel_data = await get_channel_data(channel_link)
     except ValueError as error:
         if 'Cannot get entity from a channel' in str(error):
             await event.reply('Канал должен быть публичным')
         logging.error(error)
 
     try:
-        await channel.add_channel_to_db(channel_data)
+        await add_channel_to_db(channel_data)
     except Exception as error:
         logging.error(error)
         
     try:     
-        await post.parse_posts(channel_link, channel_data)
+        await parse_posts(channel_link, channel_data)
     except ValueError as error:
         logging.error(error)
         await event.reply('К сожалению, мне не удалось найти ни одного тега')
-
-    await tag.get_tags_list(channel_data)
 
 
