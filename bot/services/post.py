@@ -4,7 +4,8 @@ import datetime
 from sqlalchemy import select
 from telethon.tl.types import InputMessagesFilterEmpty
 from db.models import *
-from services import tag
+from services.tag import parse_tags, add_tags_to_db
+from services.channel import delete_channel_from_db
 from config import (
     client,
     session_factory as Session)
@@ -45,7 +46,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
 
             # Парсим теги
 
-            tags_list = await tag.parse_tags(post.text)
+            tags_list = await parse_tags(post.text)
 
             # Увеличиваем счетчик постов с тегами
 
@@ -70,7 +71,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
         if len(posts_list) == 20 and posts_with_tags > 0:
 
             await add_posts_to_db(posts_list, channel_data)
-            await tag.add_tags_to_db(post_tag_list)
+            await add_tags_to_db(post_tag_list)
             
             posts_list.clear()
             post_tag_list.clear()
@@ -87,7 +88,7 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
     if posts_list and posts_with_tags > 0:
 
         await add_posts_to_db(posts_list, channel_data)
-        await tag.add_tags_to_db(post_tag_list)
+        await add_tags_to_db(post_tag_list)
 
         posts_list.clear()
         post_tag_list.clear()
@@ -95,6 +96,8 @@ async def parse_posts(channel: str, channel_data: dict) -> None:
     # Поднимаем исключение, если теги не найдены
         
     if posts_with_tags == 0:
+         
+         await delete_channel_from_db(channel_data)
          
          raise ValueError('Не найдено ни одного тега')
 
