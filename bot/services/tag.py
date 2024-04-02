@@ -48,10 +48,10 @@ async def get_tags_list(channel_data: dict):
     """Получаем теги определенного канала из БД"""
 
     async with Session.begin() as session:
-        # channel_pk = await session.scalar(select(Channel)
-        #                                      .where(Channel.id == channel_data['id']))
-        tags_query = select(Tag.name).where(Tag.channels.any(Channel.id == channel_data['id']))
+        
+        tags_query = select(Tag.name).where(Tag.channels.any
+                                            (Channel.channel_id == channel_data['id'])).distinct()
         tags_result = await session.execute(tags_query)
-        tags = tags_result.all()
+        tags = tags_result.scalars().all()
     
-        print(f'!!!!!СПИСОК ТЕГОВ!!!!!! {tags}')
+        return tags
