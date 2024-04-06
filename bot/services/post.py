@@ -108,7 +108,7 @@ async def add_posts_to_db(posts_list: list, channel_data: dict) -> None:
     async with Session.begin() as session:
                 
                 channel_pk = await session.scalar(select(Channel)
-                                             .where(Channel.username == channel_data['username']))
+                                             .where(Channel.username == channel_data['id']))
                 
                 for post_data in posts_list:
 
