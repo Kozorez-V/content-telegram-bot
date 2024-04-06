@@ -7,8 +7,8 @@ async def create_tags_keyboard(tags: list) -> list:
     """Создание клавиатуры со списком тегов"""
 
     tags_keyboard = []
-    for count, tag in enumerate(tags):
-        tag_button = Button.inline(text=tag, data=str(count))
+    for tag in tags:
+        tag_button = Button.inline(text=tag, data=str(tag))
         tags_keyboard.append([tag_button])
     
     return tags_keyboard

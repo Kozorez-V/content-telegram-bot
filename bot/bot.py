@@ -58,7 +58,12 @@ async def send_tag_list(event) -> None:
         tags = await get_tags_list(channel_data)
     except Exception as error:
         logging.error(error)
-        
+
     tags_keyboard = await create_tags_keyboard(tags)
 
     await event.respond("Выберите теги", buttons=tags_keyboard)
+
+
+# @bot.on(events.CallbackQuery())
+# async def choose_posts_sorting_method(event) -> None:
+#     if event.data.decode('utf-8')
