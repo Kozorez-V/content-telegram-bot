@@ -1,6 +1,7 @@
 """Логика взаимодействия с ботом"""
 
 import logging
+import contextvars
 from telethon.sync import TelegramClient, events
 
 from services.channel import get_channel_data, add_channel_to_db
@@ -21,6 +22,10 @@ bot = TelegramClient(
     api_hash).start(bot_token=bot_token)
 
 
+channel_data = contextvars.ContextVar('channel_data')
+tags = contextvars.ContextVar('tags')
+
+
 @bot.on(events.NewMessage(pattern='/start'))
 async def send_welcome(event) -> None:
     """Отправка приветственного сообщения"""
@@ -36,7 +41,7 @@ async def send_tag_list(event) -> None:
     channel_link = event.text
 
     try:
-        channel_data = await get_channel_data(channel_link)
+        channel_data.set(await get_channel_data(channel_link))
     except ValueError as error:
         if 'Cannot get entity from a channel' in str(error):
             await event.reply('Канал должен быть публичным')
@@ -55,7 +60,7 @@ async def send_tag_list(event) -> None:
         await event.reply('К сожалению, мне не удалось найти ни одного тега')
 
     try:
-        tags = await get_tags_list(channel_data)
+        tags.set(await get_tags_list(channel_data))
     except Exception as error:
         logging.error(error)
     
@@ -67,6 +72,4 @@ async def send_tag_list(event) -> None:
 
 @bot.on(events.CallbackQuery())
 async def choose_posts_sorting_method(event) -> None:
-    # Здесь мне нужно повторно использовать id или username текущего канала,
-    # а также использовать список тегов данного канала и прочее
-    print(event.data)
+    pass
