@@ -71,5 +71,5 @@ async def send_tag_list(event) -> None:
 
 
 @bot.on(events.CallbackQuery())
-async def choose_posts_sorting_method(event) -> None:
+async def show_selected_tags(event) -> None:
     pass
