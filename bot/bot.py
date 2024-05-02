@@ -22,8 +22,8 @@ bot = TelegramClient(
     api_hash).start(bot_token=bot_token)
 
 
-channel_data = contextvars.ContextVar('channel_data')
-tags = contextvars.ContextVar('tags')
+channel_data_cv = contextvars.ContextVar('channel_data')
+tags_cv = contextvars.ContextVar('tags')
 
 
 @bot.on(events.NewMessage(pattern='/start'))
@@ -41,7 +41,8 @@ async def send_tag_list(event) -> None:
     channel_link = event.text
 
     try:
-        channel_data.set(await get_channel_data(channel_link))
+        channel_data = await get_channel_data(channel_link)
+        channel_data_cv.set(channel_data)
     except ValueError as error:
         if 'Cannot get entity from a channel' in str(error):
             await event.reply('Канал должен быть публичным')
@@ -60,7 +61,8 @@ async def send_tag_list(event) -> None:
         await event.reply('К сожалению, мне не удалось найти ни одного тега')
 
     try:
-        tags.set(await get_tags_list(channel_data))
+        tags = await get_tags_list(channel_data)
+        tags_cv.set(tags)
     except Exception as error:
         logging.error(error)
     
@@ -72,4 +74,12 @@ async def send_tag_list(event) -> None:
 
 @bot.on(events.CallbackQuery())
 async def show_selected_tags(event) -> None:
-    pass
+    some_var = tags_cv.get()
+    print(some_var)
+
+    # for tag_name, tag_id in tags:
+    #     print(tag_name, tag_id)
+    #     if event.data == tag_id:
+    #         print('Yes')
+    #     else:
+    #         print('No :(')
