@@ -60,9 +60,9 @@ async def send_tag_list(event) -> None:
         logging.error(error)
     
 
-    # tags_keyboard = await create_tags_keyboard(tags)
+    tags_keyboard = await create_tags_keyboard(tags)
 
-    # await event.respond("Выберите теги", buttons=tags_keyboard)
+    await event.respond("Выберите теги", buttons=tags_keyboard)
 
 
 @bot.on(events.CallbackQuery())
