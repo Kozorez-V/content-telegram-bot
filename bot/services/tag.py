@@ -6,8 +6,6 @@ from sqlalchemy import select
 from config import session_factory as Session
 from db.models import *
 
-import logging
-
 
 async def parse_tags(post_text: str) -> Optional[List[str]]:
     """Ищем теги в сообщении и возвращаем список"""
@@ -46,14 +44,15 @@ async def add_tags_to_db(post_tag_list: list) -> None:
                 session.add(tag)
 
 
-async def get_tags_list(channel_data: dict) -> list:
-    """Получаем уникальные теги определенного канала из БД"""
+async def get_tags_list(channel_data: dict) -> tuple:
+    """Получаем уникальные теги определенного
+    канала из БД в виде пары (имя, первичный ключ)"""
 
     async with Session.begin() as session:
         
-        tags_query = select(Tag.name).where(Tag.channels.any
-                                            (Channel.channel_id == channel_data['id'])).distinct()
+        tags_query = select(Tag.name, Tag.id).where(Tag.channels.any
+                                            (Channel.channel_id == channel_data['id'])).distinct(Tag.name)
         tags_result = await session.execute(tags_query)
-        tags = tags_result.scalars().all()
+        tags = tags_result.fetchall()
     
         return tags
