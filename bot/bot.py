@@ -39,6 +39,7 @@ async def send_tag_list(event) -> None:
     """Анализируем посты из канала и возвращаем клавиатуру с тегами"""
 
     channel_link = event.text
+    tags = None
 
     try:
         channel_data = await get_channel_data(channel_link)
@@ -65,7 +66,6 @@ async def send_tag_list(event) -> None:
         tags_cv.set(tags)
     except Exception as error:
         logging.error(error)
-    
 
     tags_keyboard = await create_tags_keyboard(tags)
 
