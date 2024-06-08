@@ -69,7 +69,7 @@ async def choose_posts_sorting_method(event) -> None:
     # а также использовать список тегов данного канала и прочее
     print(event.data)
 
-== == == =
+
 """Логика взаимодействия с ботом"""
 
 import logging
@@ -153,5 +153,3 @@ async def show_selected_tags(event) -> None:
     #         print('Yes')
     #     else:
     #         print('No :(')
-
->> >> >> > dev
