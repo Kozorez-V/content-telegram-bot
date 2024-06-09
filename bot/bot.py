@@ -18,7 +18,8 @@ from config import (
 bot = TelegramClient(
     'bot',
     api_id,
-    api_hash).start(bot_token=bot_token)
+    api_hash,
+    sequential_updates=True).start(bot_token=bot_token)
 
 channel_data_cv = contextvars.ContextVar('channel_data')
 tags_cv = contextvars.ContextVar('tags')
@@ -37,7 +38,6 @@ async def send_tag_list(event) -> None:
     """Анализируем посты из канала и возвращаем клавиатуру с тегами"""
 
     channel_link = event.text
-    tags = None
 
     try:
         channel_data = await get_channel_data(channel_link)
@@ -72,12 +72,11 @@ async def send_tag_list(event) -> None:
 
 @bot.on(events.CallbackQuery())
 async def show_selected_tags(event) -> None:
-    some_var = tags_cv.get()
-    print(some_var)
+    tags = tags_cv.get()
 
-    # for tag_name, tag_id in tags:
-    #     print(tag_name, tag_id)
-    #     if event.data == tag_id:
-    #         print('Yes')
-    #     else:
-    #         print('No :(')
+    for tag_name, tag_id in tags:
+        print(f'event.data: {event.data}\ntag_id: {tag_id}')
+        if int(event.data) == tag_id:
+            print('Yes')
+        else:
+            print('No :(')
