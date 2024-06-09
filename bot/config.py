@@ -23,8 +23,7 @@ bot_token = os.getenv('BOT_TOKEN')
 client = TelegramClient(
     'client',
     api_id,
-    api_hash,
-    sequential_updates=True).start()
+    api_hash).start()
 
 # Настройки базы данных
 
